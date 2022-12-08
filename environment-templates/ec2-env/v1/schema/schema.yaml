@@ -1,0 +1,42 @@
+schema:
+  format:
+    openapi: "3.0.0"
+  environment_input_type: "EC2EnvironmentInput"
+  types:
+    EC2EnvironmentInput:
+      type: object
+      description: "Input properties for my environment"
+      properties:
+        
+        VPC:
+          Type: string 
+          Default: "vpc-0a1a4b62"
+          Description: Virtual Private Cloud (VPC)
+        
+        Subnet:
+          Type: string
+          default: "subnet-c22a71ab"
+          Description: SubnetId in your Virtual Private Cloud (VPC)
+          ConstraintDescription: Subnet you want the ec2 to reside in
+
+        Keyname: 
+          Description: KeyPair You want to associate with ec2
+          Type: string
+          default: "test-london"
+
+        
+        # subnet_type:
+        #   type: string
+        #   description: "Subnet type for your EC2 instances"
+        #   enum: ["public", "private"]
+        #   default: "public"
+        
+        EC2AMI:
+          description: "AMI used to launch the EC2 instances"
+          type: string
+          default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+        
+        InstanceType:
+          description: "EC2 instance type"
+          type: string
+          default: "t2.micro"

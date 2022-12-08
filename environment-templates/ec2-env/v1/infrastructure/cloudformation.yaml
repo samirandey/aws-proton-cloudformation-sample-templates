@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+# Parameters:
+
+  # VPC:
+  #   Type: AWS::EC2::VPC::Id
+  #   Default: vpc-0a1a4b62
+  #   Description: Virtual Private Cloud (VPC)
+
+  # SecurityGroupId:
+  #   Type: AWS::EC2::SecurityGroup::Id
+  #   Description: Security grouup for Ec2
+
+  # Subnet:
+  #   Type: AWS::EC2::Subnet::Id
+  #   Description: SubnetId in your Virtual Private Cloud (VPC)
+  #   ConstraintDescription: Subnet you want the ec2 to reside in
+  
+  # KeyName:
+  #   Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+  #   Type: AWS::EC2::KeyPair::KeyName
+  #   ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  
+  # InstanceType:
+  #   Description: WebServer EC2 instance type
+  #   Type: String
+  #   Default: t2.micro
+  #   AllowedValues: [t2.nano, t2.micro, t2.small, t2.medium, t2.large, t2.xlarge, t2.2xlarge,
+  #     t3.nano, t3.micro, t3.small, t3.medium, t3.large, t3.xlarge, t3.2xlarge,
+  #     m4.large, m4.xlarge, m4.2xlarge, m4.4xlarge, m4.10xlarge,
+  #     m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge,
+  #     c5.large, c5.xlarge, c5.2xlarge, c5.4xlarge, c5.9xlarge,
+  #     g3.8xlarge,
+  #     r5.large, r5.xlarge, r5.2xlarge, r5.4xlarge, r3.12xlarge,
+  #     i3.xlarge, i3.2xlarge, i3.4xlarge, i3.8xlarge,
+  #     d2.xlarge, d2.2xlarge, d2.4xlarge, d2.8xlarge]
+  #   ConstraintDescription: must be a valid EC2 instance type.
+  
+  
+  # LatestAmiId:
+  #   Type:  'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+  #   Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  #   Description: you can choose to use another ami, copy the ami id and paste it
+
+  # Key:
+  #   Type: String
+  #   Description: Define Tags Key
+
+  # Value:
+  #   Type: String
+  #   Description: Define Tags Value
+
+#---------------------------------------------------------------
+
+Resources:
+  Ec2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      # Tags:
+      # - Key: 
+      #     Ref: Key
+      #   Value: 
+      #     Ref: Value
+      VpcId: '{{ environment.inputs.VPC}}'
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: '{{environment.inputs.EC2AMI}}'
+      InstanceType: '{{environment.inputs.InstanceType}}'
+      KeyName: '{{environment.inputs.Keyname}}'
+      SecurityGroup: !Ref Ec2SecurityGroup
+      SubnetId: '{{ environment.inputs.Subnet}}'
+      # Tags: 
+      #   - Key: 
+      #       Ref: Key
+      #     Value: 
+      #       Ref: Value
